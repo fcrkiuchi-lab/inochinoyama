@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>命の山をまもる会</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ========================================
+           ROOT VARIABLES - 静謐な白 Design System
+        ======================================== */
+        :root {
+            --color-bg: #F9F9F7;
+            --color-bg-subtle: #F5F5F3;
+            --color-ink: #333333;
+            --color-ink-light: #555555;
+            --color-gold: #A08D5E;
+            --color-gold-light: #B8A77A;
+            --font-serif: 'Noto Serif JP', "Yu Mincho", "YuMincho", "Hiragino Mincho Pro", serif;
+            --transition-slow: 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --transition-medium: 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --transition-fast: 0.3s ease;
+        }
+
+        /* ========================================
+           RESET & BASE
+        ======================================== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-serif);
+            background-color: var(--color-bg);
+            color: var(--color-ink);
+            overflow-x: hidden;
+            line-height: 1.8;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ========================================
+           HEADER - ロゴのみ（MEMBERSHIPボタン削除）
+        ======================================== */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: transparent;
+            padding: clamp(18px, 3.5vw, 32px) clamp(24px, 5vw, 56px);
+            transition: background var(--transition-fast);
+        }
+
+        header.scrolled {
+            background: rgba(249, 249, 247, 0.94);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .header-logo {
+            font-size: clamp(0.7rem, 1.1vw, 0.88rem);
+            font-weight: 300;
+            color: var(--color-gold);
+            letter-spacing: 0.28em;
+            text-decoration: none;
+            transition: opacity var(--transition-fast);
+        }
+
+        .header-logo:hover {
+            opacity: 0.6;
+        }
+
+        /* ========================================
+           HERO SECTION - 究極の調和
+           背景80%維持 + 四隅へ向かう放射状グラデーション
+        ======================================== */
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        /*
+           背景画像構成:
+           最前面 - 中央透明→四隅で和紙色の放射状グラデーション
+           最背面 - シーン１.png（山と霧のディテール80%維持）
+        */
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                /* 最前面: 中央透明→四隅で和紙色の放射状グラデーション */
+                radial-gradient(
+                    ellipse 85% 75% at 50% 48%,
+                    rgba(249, 249, 247, 0) 0%,
+                    rgba(249, 249, 247, 0) 35%,
+                    rgba(249, 249, 247, 0.25) 55%,
+                    rgba(249, 249, 247, 0.5) 70%,
+                    rgba(249, 249, 247, 0.8) 85%,
+                    rgba(249, 249, 247, 0.95) 100%
+                ),
+                /* 最背面: 背景画像 */
+                url('シーン１.png');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover, cover;
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 88%;
+            opacity: 0;
+            transform: translateY(18px);
+            animation: heroFadeIn 2.2s ease 0.7s forwards;
+        }
+
+        @keyframes heroFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* タイトル - 細いウェイト、大胆な字間0.3emで「間」を表現 */
+        .hero-title {
+            font-size: clamp(1.5rem, 5vw, 3.2rem);
+            font-weight: 200;
+            color: var(--color-ink);
+            letter-spacing: 0.3em;
+            margin-bottom: clamp(36px, 5.5vw, 65px);
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
+        }
+
+        /* メッセージ - 控えめなサイズ、品格ある字間 */
+        .hero-message {
+            font-size: clamp(0.78rem, 1.25vw, 0.92rem);
+            font-weight: 300;
+            line-height: 2.7;
+            letter-spacing: 0.12em;
+            color: var(--color-ink);
+            max-width: 620px;
+            margin: 0 auto;
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6);
+        }
+
+        .hero-message p {
+            margin-bottom: 0.15em;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: clamp(22px, 3.5vw, 45px);
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            animation: fadeIn 1s ease 2.8s forwards;
+        }
+
+        .scroll-indicator span {
+            font-size: 0.52rem;
+            letter-spacing: 0.28em;
+            color: var(--color-ink-light);
+            margin-bottom: 10px;
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 32px;
+            background: linear-gradient(to bottom, var(--color-ink-light), transparent);
+            position: relative;
+        }
+
+        .scroll-line::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -1.5px;
+            width: 4px;
+            height: 4px;
+            background: var(--color-gold);
+            border-radius: 50%;
+            animation: scrollPulse 2.2s ease-in-out infinite;
+        }
+
+        @keyframes scrollPulse {
+            0%, 100% { top: 0; opacity: 1; }
+            100% { top: 28px; opacity: 0; }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* ========================================
+           SECTION COMMON STYLES
+        ======================================== */
+        section {
+            padding: clamp(65px, 9vw, 120px) clamp(20px, 5vw, 55px);
+            background-color: var(--color-bg);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: clamp(45px, 6.5vw, 75px);
+        }
+
+        .section-title-en {
+            font-size: clamp(0.58rem, 0.85vw, 0.72rem);
+            font-weight: 300;
+            letter-spacing: 0.38em;
+            color: var(--color-gold);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .section-title-jp {
+            font-size: clamp(1.15rem, 2.3vw, 1.6rem);
+            font-weight: 300;
+            letter-spacing: 0.28em;
+            color: var(--color-ink);
+        }
+
+        /* ========================================
+           STORY SECTION - 命の物語（ローカルMP4動画）
+        ======================================== */
+        .story-section {
+            background: var(--color-bg-subtle);
+        }
+
+        .story-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(22px, 3.5vw, 45px);
+            max-width: 1150px;
+            margin: 0 auto;
+        }
+
+        .story-card {
+            opacity: 0;
+            transform: translateY(25px);
+            transition: all var(--transition-slow);
+        }
+
+        .story-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .story-card:nth-child(2) {
+            transition-delay: 0.12s;
+        }
+
+        .story-card:nth-child(3) {
+            transition-delay: 0.24s;
+        }
+
+        /* 動画ラッパー - ホバーで僅かに浮き上がる */
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #eaeae8;
+            overflow: hidden;
+            margin-bottom: clamp(15px, 1.8vw, 22px);
+            border-radius: 2px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+        }
+
+        .video-wrapper:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .story-caption {
+            text-align: center;
+        }
+
+        .caption-en {
+            font-size: clamp(0.72rem, 1.05vw, 0.85rem);
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            color: var(--color-ink);
+            margin-bottom: 5px;
+        }
+
+        .caption-jp {
+            font-size: clamp(0.58rem, 0.8vw, 0.68rem);
+            font-weight: 300;
+            letter-spacing: 0.16em;
+            color: var(--color-gold);
+        }
+
+        /* ========================================
+           KYOIKU SECTION - 研ぎ澄まされたミニマリズム
+           一文字ずつが呼吸しているような空間
+        ======================================== */
+        .kyoiku-section {
+            background: var(--color-bg);
+            min-height: 65vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: clamp(90px, 14vw, 180px) clamp(35px, 9vw, 110px);
+        }
+
+        .kyoiku-content {
+            text-align: center;
+            max-width: 580px;
+            opacity: 0;
+            transform: translateY(18px);
+            transition: all var(--transition-slow);
+        }
+
+        .kyoiku-content.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* タイトル - 控えめで品格あるh2相当 */
+        .kyoiku-title-jp {
+            font-size: clamp(0.95rem, 1.7vw, 1.25rem);
+            font-weight: 300;
+            letter-spacing: 0.55em;
+            color: var(--color-gold);
+            margin-bottom: 8px;
+        }
+
+        .kyoiku-title-en {
+            font-size: clamp(0.48rem, 0.68vw, 0.56rem);
+            font-weight: 300;
+            letter-spacing: 0.38em;
+            color: var(--color-gold-light);
+            margin-bottom: clamp(55px, 9vw, 105px);
+        }
+
+        /* 本文 - h2相当の控えめサイズ、line-height 2.5で呼吸する空間 */
+        .kyoiku-text {
+            font-size: clamp(0.82rem, 1.15vw, 0.98rem);
+            font-weight: 300;
+            line-height: 2.5;
+            letter-spacing: 0.18em;
+            color: var(--color-ink);
+        }
+
+        .kyoiku-text p {
+            margin: 0;
+        }
+
+        /* ========================================
+           FOOTER
+        ======================================== */
+        footer {
+            background: var(--color-bg-subtle);
+            border-top: 1px solid rgba(160, 141, 94, 0.1);
+            padding: clamp(32px, 3.5vw, 45px) clamp(20px, 5vw, 55px);
+            text-align: center;
+        }
+
+        .footer-text {
+            font-size: clamp(0.52rem, 0.75vw, 0.62rem);
+            font-weight: 300;
+            letter-spacing: 0.16em;
+            color: var(--color-ink-light);
+        }
+
+        /* ========================================
+           RESPONSIVE - プロの黄金比維持
+        ======================================== */
+        @media (max-width: 1024px) {
+            .story-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .story-card:nth-child(3) {
+                grid-column: span 2;
+                max-width: 420px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                letter-spacing: 0.22em;
+            }
+
+            .hero-message {
+                line-height: 2.4;
+                letter-spacing: 0.08em;
+                padding: 0 8px;
+            }
+
+            .story-grid {
+                grid-template-columns: 1fr;
+                max-width: 420px;
+            }
+
+            .story-card:nth-child(3) {
+                grid-column: span 1;
+            }
+
+            .kyoiku-section {
+                padding: clamp(70px, 11vw, 140px) clamp(28px, 7vw, 75px);
+            }
+
+            .kyoiku-text {
+                line-height: 2.3;
+                letter-spacing: 0.12em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 14px 18px;
+            }
+
+            .hero-title {
+                letter-spacing: 0.18em;
+                font-weight: 300;
+            }
+
+            .kyoiku-title-jp {
+                letter-spacing: 0.32em;
+            }
+
+            .kyoiku-text {
+                line-height: 2.2;
+            }
+
+            .video-wrapper:hover {
+                transform: none;
+            }
+        }
+
+        /* aspect-ratio非対応ブラウザ用フォールバック */
+        @supports not (aspect-ratio: 16 / 9) {
+            .video-wrapper {
+                padding-bottom: 56.25%;
+                height: 0;
+            }
+            .video-wrapper video {
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ========== HEADER（ロゴのみ） ========== -->
+<header id="header">
+    <a href="#" class="header-logo">命の山をまもる会</a>
+</header>
+
+<!-- ========== HERO SECTION ========== -->
+<section class="hero">
+    <div class="hero-background"></div>
+
+    <div class="hero-content">
+        <h1 class="hero-title">命の山をまもる会</h1>
+        <div class="hero-message">
+            <p>山は命の源である。ここからすべての物語が始まります。</p>
+            <p>水を蓄え、空気を清め、すべての生命を育む、畏れ敬うべき存在。</p>
+            <p>私たちは、この尊き山々を守り、次世代へと継承していく使命を担っていきます。</p>
+        </div>
+    </div>
+
+    <div class="scroll-indicator">
+        <span>SCROLL</span>
+        <div class="scroll-line"></div>
+    </div>
+</section>
+
+<!-- ========== STORY SECTION（命の物語 - ローカルMP4動画） ========== -->
+<section class="story-section">
+    <div class="section-title">
+        <span class="section-title-en">STORY OF LIFE</span>
+        <h2 class="section-title-jp">命の物語</h2>
+    </div>
+
+    <div class="story-grid">
+        <article class="story-card">
+            <div class="video-wrapper">
+                <video
+                    controls
+                    playsinline
+                    loop
+                    muted
+                    preload="metadata">
+                    <source src="命の山MV.mp4" type="video/mp4">
+                    お使いのブラウザは動画再生に対応していません。
+                </video>
+            </div>
+            <div class="story-caption">
+                <p class="caption-en">Message Movie</p>
+                <p class="caption-jp">私たちのメッセージ</p>
+            </div>
+        </article>
+
+        <article class="story-card">
+            <div class="video-wrapper">
+                <video
+                    controls
+                    playsinline
+                    loop
+                    muted
+                    preload="metadata">
+                    <source src="お母さんを待つ森の子.mp4" type="video/mp4">
+                    お使いのブラウザは動画再生に対応していません。
+                </video>
+            </div>
+            <div class="story-caption">
+                <p class="caption-en">Story of the Forest</p>
+                <p class="caption-jp">森の物語</p>
+            </div>
+        </article>
+
+        <article class="story-card">
+            <div class="video-wrapper">
+                <video
+                    controls
+                    playsinline
+                    loop
+                    muted
+                    preload="metadata">
+                    <source src="第１話クマの生態と自然の循環.mp4" type="video/mp4">
+                    お使いのブラウザは動画再生に対応していません。
+                </video>
+            </div>
+            <div class="story-caption">
+                <p class="caption-en">Ecology</p>
+                <p class="caption-jp">生態系をまもる</p>
+            </div>
+        </article>
+    </div>
+</section>
+
+<!-- ========== KYOIKU SECTION（共育共創） ========== -->
+<section class="kyoiku-section">
+    <div class="kyoiku-content">
+        <h2 class="kyoiku-title-jp">共育共創</h2>
+        <p class="kyoiku-title-en">Educational Co-creation</p>
+
+        <div class="kyoiku-text">
+            <p>教え、教えられる関係を超えて。</p>
+            <p>共に学び、共に創る。</p>
+            <p>自然から学び、自然と共に在る。</p>
+        </div>
+    </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+    <p class="footer-text">&copy; 2024 命の山をまもる会 All Rights Reserved.</p>
+</footer>
+
+<!-- ========== JAVASCRIPT ========== -->
+<script>
+    // Header scroll effect
+    const header = document.getElementById('header');
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 80) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    });
+
+    // Intersection Observer for scroll animations
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, observerOptions);
+
+    // Observe story cards
+    document.querySelectorAll('.story-card').forEach(card => {
+        observer.observe(card);
+    });
+
+    // Observe kyoiku content
+    document.querySelectorAll('.kyoiku-content').forEach(content => {
+        observer.observe(content);
+    });
+</script>
+
+</body>
+</html>
